@@ -193,6 +193,14 @@
   #hgo:disabled{opacity:.6}
   @media (max-width:900px){#hcards{grid-template-columns:repeat(2,minmax(0,1fr))}#heroes{padding-top:64px}}
   @media (max-width:520px){#hcards{grid-template-columns:1fr}.hero{flex-direction:row;gap:10px;align-items:flex-start}.hero canvas{width:92px;flex:none;align-self:flex-start}.hero h3{text-align:left}}
+  #pausescr{overflow-y:auto;justify-content:safe center}
+  @media (max-height:560px){#pausescr h2{font-size:30px;margin:4px 0}#pausescr #pmsg{margin:0 0 8px}.vols{padding:8px 14px;margin-bottom:10px;gap:6px 12px}#pausescr .pbtns{display:grid;grid-template-columns:1fr 1fr;gap:8px;min-width:0;width:min(460px,92vw)}#pausescr .pbtns .big{font-size:16px;padding:7px 12px 10px}}
+  .vols{display:grid;grid-template-columns:auto minmax(140px,220px) 3.2em;align-items:center;gap:10px 12px;background:var(--parch,#f3e3bf);border:3px solid var(--navy);border-radius:12px;padding:12px 16px;margin:0 0 16px;box-shadow:0 5px 0 var(--navy);color:var(--navy);font-weight:900;font-size:15px}
+  .vols output{text-align:right;font-variant-numeric:tabular-nums}
+  .vols input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:10px;border-radius:6px;background:linear-gradient(90deg,var(--gold,#f6c64a) var(--p,100%),#c9b48a var(--p,100%));border:2px solid var(--navy);cursor:pointer;margin:0}
+  .vols input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:24px;height:24px;border-radius:50%;background:#fff6dc;border:3px solid var(--navy);box-shadow:0 2px 0 var(--navy)}
+  .vols input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;background:#fff6dc;border:3px solid var(--navy)}
+  .vols input[type=range]:focus-visible{outline:3px solid #fff;outline-offset:3px}
   .pbtns{display:flex;flex-direction:column;gap:12px;align-items:stretch;min-width:230px}
   .big.alt{background:var(--parch);box-shadow:0 5px 0 var(--navy),inset 0 -6px 0 var(--parch-lo);font-size:18px}
   #dsub{margin:4px 0 22px;font-size:16px}
@@ -296,7 +304,7 @@
     <div style="margin-top:6px"><b>Lettering</b>: Lilita One by Juan Montoreano and Nunito by Vernon Adams, Cyreal and Jacques Le Bailly (SIL Open Font License).</div>
     <div style="margin-top:6px">Thank you to everyone who shares their work freely. We credit all of it, whether the licence asks for it or not.</div>
     <button class="big" id="credclose" style="align-self:center;margin-top:8px">Back</button></div></div>
-  <div class="screen" id="pausescr"><h2 class="outline">Paused</h2><p class="outline" id="pmsg">The battle waits for you.</p><div class="pbtns"><button class="big" id="resume">Resume</button><button class="big alt" id="psave">Save</button><button class="big alt" id="psavex">Save and exit</button><button class="big alt" id="pexit">Exit without saving</button></div></div>
+  <div class="screen" id="pausescr"><h2 class="outline">Paused</h2><p class="outline" id="pmsg">The battle waits for you.</p><div class="vols"><label for="vmus">Music</label><input type="range" id="vmus" min="0" max="100" step="5"><output id="vmuso"></output><label for="vsfx">Sound effects</label><input type="range" id="vsfx" min="0" max="100" step="5"><output id="vsfxo"></output></div><div class="pbtns"><button class="big" id="resume">Resume</button><button class="big alt" id="psave">Save</button><button class="big alt" id="psavex">Save and exit</button><button class="big alt" id="pexit">Exit without saving</button></div></div>
   <div class="screen" id="won"><h2 class="outline">Victory</h2><p class="outline" id="wsub" style="margin:8px 0 0"></p><div class="stats"><div><b id="ww">0</b>waves held</div><div><b id="wl">1</b>level</div><div><b id="wk">0</b>foes slain</div><div><b id="wh">0</b>castle health</div></div><p class="outline crline" id="wcr"></p><p class="outline" style="margin:0 0 16px;font-size:15px">End the run here, or keep this fortress and see how far it can go. Waves keep getting harder.</p><div class="hbtns" style="margin-top:0"><button class="big alt" id="wend">End the run</button><button class="big" id="wendless">Endless mode</button></div></div>
   <div class="screen" id="over"><h2 class="outline">The castle has fallen</h2><div class="stats"><div><b id="ow">0</b>waves held</div><div><b id="ol">1</b>level</div><div><b id="ok">0</b>foes slain</div></div><p class="outline crline" id="ocr"></p><button class="big" id="again">Play again</button><div id="obest" class="outline" style="margin-top:16px;font-size:15px"></div></div>
   <div id="mtools"><button class="round" id="mfs" aria-label="Full screen"><svg viewBox="0 0 20 20"><path d="M3 3h5v2.4H5.4V8H3zM12 3h5v5h-2.4V5.4H12zM3 12h2.4v2.6H8V17H3zM14.6 12H17v5h-5v-2.4h2.6z"/></svg></button><button class="round" id="msnd" aria-label="Sound"><svg viewBox="0 0 20 20"><path d="M3 7h3l5-4v14l-5-4H3zM13.5 6.5a5 5 0 010 7l-1.1-1.1a3.4 3.4 0 000-4.8z"/></svg></button></div>
@@ -470,10 +478,12 @@ const RAR=['Common','Uncommon','Rare'], RARC=['','unc','rare'];
 
 /* ---------- sound ---------- */
 let AC=null,master=null,noiseBuf=null,muted=false,lastS={};
+let volMus=1,volSfx=1;try{const a=localStorage.getItem('pb_vmus'),b=localStorage.getItem('pb_vsfx');if(a!=null)volMus=Math.max(0,Math.min(1,+a));if(b!=null)volSfx=Math.max(0,Math.min(1,+b))}catch(e){}
+const sfxLevel=()=>muted?0:.32*volSfx;
 try{muted=localStorage.getItem('pb_mute')==='1'}catch(e){}
 function audioInit(){
   if(AC)return;
-  try{const A=globalThis.AudioContext||globalThis.webkitAudioContext;if(!A)return;AC=new A();master=AC.createGain();master.gain.value=muted?0:.32;master.connect(AC.destination);
+  try{const A=globalThis.AudioContext||globalThis.webkitAudioContext;if(!A)return;AC=new A();master=AC.createGain();master.gain.value=sfxLevel();master.connect(AC.destination);
     noiseBuf=AC.createBuffer(1,AC.sampleRate*.5,AC.sampleRate);const d=noiseBuf.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1}catch(e){AC=null}
 }
 function tone(f,d,type,v,f2,delay){
@@ -536,8 +546,8 @@ function sfx(n){
   else if(s)s[1]();
 }
 /* music: a calm loop between waves, battle loops during them, the big orchestral theme for warlord waves */
-const TRACKS={calm:['calm.ogg',0.325],battle:['battle.ogg',0.325],march:['march.ogg',0.325],epic:['epic.mp3',0.13],
-  coast_calm:['mus_coast_calm.ogg',0.182],coast_battle:['mus_coast_battle.ogg',0.273],canyon_calm:['mus_canyon_calm.ogg',0.182],canyon_battle:['mus_canyon_battle.ogg',0.182],
+const TRACKS={calm:['calm.ogg',0.26],battle:['battle.ogg',0.26],march:['march.ogg',0.26],epic:['epic.mp3',0.104],
+  coast_calm:['mus_coast_calm.ogg',0.146],coast_battle:['mus_coast_battle.ogg',0.218],canyon_calm:['mus_canyon_calm.ogg',0.146],canyon_battle:['mus_canyon_battle.ogg',0.146],
   amb_forest:['amb_forest.ogg',.32],amb_coast:['amb_coast.ogg',.3],amb_canyon:['amb_canyon.ogg',.3]};
 const LMUS={coast:{calm:'coast_calm',battle:'coast_battle'},canyon:{calm:'canyon_calm',battle:'canyon_battle'}};
 const MUS={};let musOn=false,musWant=null;
@@ -553,7 +563,7 @@ function musicTick(dt){
   const amb=S.mode!=='title'&&S.mode!=='over'&&S.map?'amb_'+S.map:null;
   if(want&&!MUS[want]){const a=new Audio('audio/'+TRACKS[want][0]);a.loop=true;a.volume=0;a.preload='auto';MUS[want]=a}
   if(amb&&TRACKS[amb]&&!MUS[amb]){const a=new Audio('audio/'+TRACKS[amb][0]);a.loop=true;a.volume=0;a.preload='auto';MUS[amb]=a}
-  for(const k in MUS){const a=MUS[k],tv=((k===want||k===amb)&&!muted&&!document.hidden)?TRACKS[k][1]:0;
+  for(const k in MUS){const a=MUS[k],tv=((k===want||k===amb)&&!muted&&!document.hidden)?TRACKS[k][1]*(k===amb?volSfx:volMus):0;
     let v=a.volume+(tv-a.volume)*Math.min(1,dt*1.6);if(Math.abs(v-tv)<.004)v=tv;a.volume=Math.max(0,Math.min(1,v));
     if(v>0&&a.paused){const p=a.play();if(p&&p.catch)p.catch(()=>{})}else if(v===0&&!a.paused){a.pause();if(k!==want)a.currentTime=0}}
 }
@@ -1458,6 +1468,11 @@ $('tipok').onclick=()=>{tutStep++;tutShown=-1;$('tip').classList.remove('on');tu
 $('tutbtn').onclick=()=>{tutStep=0;tutShown=-1;tutSave();$('tutbtn').textContent='Tips on for your next run'};
 $('tipskip').onclick=()=>{tutStep=TUT.length;tutShown=-1;$('tip').classList.remove('on');tutSave()};
 function enterGame(){audioInit();loadSfx();musOn=true;$('title').classList.remove('on');document.body.classList.remove('title');resize();barKey='';renderBar();renderPreview();showInfo()}
+function volUI(){for(const [id,v] of [['vmus',volMus],['vsfx',volSfx]]){const el=$(id),pc=Math.round(v*100);el.value=pc;el.style.setProperty('--p',pc+'%');$(id+'o').textContent=pc+'%'}}
+volUI();
+$('vmus').oninput=e=>{volMus=e.target.value/100;volUI();try{localStorage.setItem('pb_vmus',volMus)}catch(x){}};
+$('vsfx').oninput=e=>{volSfx=e.target.value/100;volUI();if(master)master.gain.value=sfxLevel();try{localStorage.setItem('pb_vsfx',volSfx)}catch(x){}};
+$('vsfx').onchange=()=>{audioInit();sfx('coin')};
 $('psave').onclick=()=>{$('pmsg').textContent=saveRun()?'Saved. You can carry on from the title screen '+(cloud.user?'on any device signed in to your Google account.':'on this device.'):'This device would not let the game save.'};
 $('psavex').onclick=()=>{if(saveRun())showTitle();else $('pmsg').textContent='This device would not let the game save, so you are still in the run.'};
 $('pexit').onclick=()=>showTitle();
@@ -1493,7 +1508,7 @@ $('shopclose').onclick=()=>setShop(false);
 
 /* ---------- cloud save: Google sign-in with Firebase. The device save stays the main save; the account holds a copy. ---------- */
 const FBV='13.4.0',FBC={apiKey:"AIzaSyAqO2KcVfim5mhrrXNth2-2XbuulMZzj20",authDomain:"patchwork-bastion.firebaseapp.com",databaseURL:"https://patchwork-bastion-default-rtdb.firebaseio.com",projectId:"patchwork-bastion",storageBucket:"patchwork-bastion.firebasestorage.app",messagingSenderId:"794433346508",appId:"1:794433346508:web:c5563008630423139a9b69"};
-const SYNC=['pb_save','pb_crowns','pb_arm','pb_bank','pb_best','pb_wins','pb_tut','pb_diff','pb_mute','pb_dmg'];
+const SYNC=['pb_save','pb_crowns','pb_arm','pb_bank','pb_best','pb_wins','pb_tut','pb_diff','pb_mute','pb_dmg','pb_vmus','pb_vsfx'];
 const cloud={api:null,user:null,state:'off',msg:'',hold:false,pend:undefined,timer:0,saving:false};
 const STP=Storage.prototype,rawSet=STP.setItem,rawDel=STP.removeItem;
 function lsGet(k){try{return localStorage.getItem(k)}catch(e){return null}}
@@ -1592,7 +1607,7 @@ $('fs').onclick=()=>{
     else{const rq=el.requestFullscreen||el.webkitRequestFullscreen;if(!rq)return no();const p=rq.call(el);if(p&&p.catch)p.catch(no)}
   }catch(e){no()}
 };
-$('snd').onclick=()=>{muted=!muted;audioInit();loadSfx();if(master)master.gain.value=muted?0:.32;$('snd').classList.toggle('off',muted);try{localStorage.setItem('pb_mute',muted?'1':'0')}catch(e){}};
+$('snd').onclick=()=>{muted=!muted;audioInit();loadSfx();if(master)master.gain.value=sfxLevel();$('snd').classList.toggle('off',muted);try{localStorage.setItem('pb_mute',muted?'1':'0')}catch(e){}};
 $('again').onclick=()=>{$('over').classList.remove('on');setShop(false);openHeroes()};
 globalThis.__grow=()=>expand();
 $('play').onclick=()=>{audioInit();loadSfx();openHeroes()};
