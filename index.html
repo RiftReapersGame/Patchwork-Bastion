@@ -529,7 +529,7 @@ const REC={bolt:['bow',.3,1.08,80],core:['bow',.2,1.25,110],sniper:['bow',.55,.8
   hub:['castlehit',.75,1,120],collapse:[V('s_fall',3),.75,.8,600],warroar:[['s_roar2','s_roar4'],.8,.8,900],
   level:['levelup',.55,1,300],pick:['tap',.7,1,40],deny:['s_deny',.25,1,120],build:['build',.6,1,120],upgrade:[['s_hammer1','s_hammer2'],.4,1,120],land:['land',.7,1,120],
   wave:['wave',.55,1,400],boss:['boss',.8,1,900],rift:['growl',.6,1,400],over:['lose',.8,1,900],cleared:['cleared',.6,1,300],gong:['s_gong',.5,1,900],
-  coin:[V('s_coin',3),.16,1.15,55],purse:['s_purse',.4,1,150],
+  coin:['s_ching',.16,1,55],coindrop:[['s_ting1','s_ting2'],.12,1,80],purse:['s_purse',.4,1,150],
   dshuf:['s_dshuf',.5,1,600],dthrow:['s_dthrow',.55,1,300],deal:['s_cfan',.42,1,300],cpick:[['s_cplace1','s_cplace2'],.45,1,120],banish:['s_cshove',.5,1,200],lock:['s_latch',.4,1,120]};
 
 const BUF={};let sfxAsked=false,voices=0;
@@ -905,7 +905,7 @@ function placeFly(){const fl=$('flyout'),btn=barOpen&&document.querySelector('#u
 /* gold arrives as coins: they pop out, hop once and fly to the gold counter, and the number there only goes up
    as each one lands. S.gold itself is paid at once, so spending and saving are not delayed. */
 let goldT=[40,90],landT=0,TWS=[],twT=3,twLast=0;
-function coins(x,y,amt){S.gold+=amt;if(!(amt>0))return;
+function coins(x,y,amt){S.gold+=amt;if(!(amt>0))return;sfx('coindrop');
   let live=0;for(const f of S.fx)if(f.k==='coin')live++;
   const n=live>70?1:Math.min(12,Math.max(1,Math.round(amt/3)));
   for(let i=0;i<n;i++){const d=i*.07;S.fx.push({k:'coin',x:x+rnd(-.12,.12),y,v:amt/n,life:1.05+d,max:1.05,hx:rnd(-.7,.7),hy:rnd(.45,.85),bend:rnd(-1,1),ph:rnd(0,10)})}}
