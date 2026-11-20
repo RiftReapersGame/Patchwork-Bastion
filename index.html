@@ -290,8 +290,9 @@
     <div><b>Hero castles, fortress stonework, bridges, painted towers, flying creatures, goblins, the goblin camp, plot markers, trees, bushes, rocks, the sheep, grass, meadows, sand, water, the canyon cliffs, cacti, skull, tumbleweed, lizard, projectiles and effects</b>: original art made for Patchwork Bastion.</div>
     <div style="margin-top:6px"><b>Other art</b>: Tiny Swords by Pixel Frog, both the current free pack and the original one the goblins come from.</div>
     <div><b>Flying creatures</b> (from the Stendhal project's art collection, on OpenGameArt):<br>Dragons by ZaPaper, with Jordan Irwin (AntumDeluge) and bleutailfly, CC BY 3.0. Credits to buko-studios.com, commissioned by PlayCraft. The sky wyrm is a recoloured dragon from the same set.<br>Phoenix: "Phoenix (reborn)" by Chasersgaming, CC0, repainted for this game.<br>Bats by bagzie, OGA BY 3.0.<br>Pegasus by bluecarrot16, bleutailfly and Jordan Irwin (AntumDeluge), OGA BY 3.0.<br>Angel by Svetlana Kushnariova (Cabbit), liftarn, freedo, Cethiel and Jordan Irwin (AntumDeluge), OGA BY 3.0.<br>Winged imp by Stephen Challener (Redshrike), William.Thompsonj and Jordan Irwin (AntumDeluge), OGA BY 3.0.</div>
-    <div><b>Music</b>: RandomMind, Eldritch Grim and cynicmusic (CC0).</div>
-    <div><b>Sounds</b>: Kenney, rubberduck, Still North Media, StarNinjas, Vehicle, themightyglider, William Hector, isaiah658 and AntumDeluge, and the CC0 Public Domain Sounds collection gathered by lavenderdotpet (all CC0).</div>
+    <div><b>Music</b>: RandomMind, Eldritch Grim and cynicmusic (CC0); "Treasure Hunter" by Tad Miller (CC0); "Settlement of the Frontier" by Tad Miller (CC BY 4.0); "Dark Quest" by Alexandr Zhelanov (CC BY 4.0).</div>
+    <div><b>Sounds</b>: Kenney, rubberduck, Still North Media, StarNinjas, Vehicle, themightyglider, William Hector, isaiah658 and AntumDeluge, Ben Burnes (Abstraction), and the CC0 Public Domain Sounds collection gathered by lavenderdotpet (all CC0).</div>
+    <div><b>Nature sounds</b>: forest birds by kvgarlic and wind by felix.blume (CC0); sea waves by Luftrum (CC BY); birds and waves edited by Porrumentzio for Blanket.</div>
     <div style="margin-top:6px"><b>Lettering</b>: Lilita One by Juan Montoreano and Nunito by Vernon Adams, Cyreal and Jacques Le Bailly (SIL Open Font License).</div>
     <div style="margin-top:6px">Thank you to everyone who shares their work freely. We credit all of it, whether the licence asks for it or not.</div>
     <button class="big" id="credclose" style="align-self:center;margin-top:8px">Back</button></div></div>
@@ -505,26 +506,40 @@ const SF={
   over:[300,()=>[392,330,262,196].forEach((f,i)=>tone(f,.3,'sawtooth',.1,0,i*.16))],
 };
 /* recorded sounds: [file, volume, pitch, shortest gap in ms]; the synth above is the fallback until a file has loaded */
-const REC={bolt:['bow',.3,1.08,80],core:['bow',.2,1.25,110],sniper:['bow',.55,.8,90],cannon:['throw',.5,.85,90],frost:['magic',.3,1,110],
-  tesla:['magichit',.32,1.5,110],flame:['fire',.22,1,650],boom:['boom',.42,1,90],die:['die',.3,1,70],diebig:['diebig',.7,1,200],hub:['castlehit',.75,1,120],
-  level:['levelup',.55,1,300],pick:['tap',.7,1,40],build:['build',.6,1,120],land:['land',.7,1,120],wave:['wave',.55,1,400],boss:['boss',.8,1,900],
-  tnt:['throw',.45,.95,110],exec:['throw',.4,1.6,120],oil:['throw',.45,.8,200],catapult:['throw',.8,.6,300],bell:['build',.8,1.7,400],
-  guard:['throw',.4,1.4,120],repeater:['bow',.22,1.4,60],ballista:['bow',.65,.6,120],glaive:['throw',.4,1.3,110],blowpipe:['throw',.25,1.9,90],gale:['magic',.5,.6,300],quake:['boom',.3,.75,200],obelisk:['magic',.1,1.7,300],star:['magichit',.5,.6,300],lancer:['throw',.45,1.1,100],hex:['magic',.3,.75,110],
-  rift:['growl',.6,1,400],over:['lose',.8,1,900],cleared:['cleared',.6,1,300],coin:['tap',.3,2.3,60]};
-const BUF={};let sfxAsked=false;
+const V=(p,n)=>Array.from({length:n},(_,i)=>p+(i+1));
+const REC={bolt:['bow',.3,1.08,80],core:['bow',.2,1.25,110],sniper:['bow',.55,.8,90],repeater:['bow',.22,1.4,60],
+  ballista:['s_thunk',.42,.85,120],lancer:[['s_lance1','s_lance2'],.3,1,100],glaive:['s_twirl',.3,1.15,110],blowpipe:['s_puff',.22,1.5,90],
+  cannon:[V('s_cannon',4),.32,1,90],tnt:['throw',.45,.95,110],oil:['throw',.45,.8,200],catapult:['s_creak',.4,1.1,300],exec:['s_chop',.38,1,120],guard:[V('s_blade',3),.24,1,120],
+  bell:['s_bell',.5,1,400],flame:['fire',.22,1,650],tesla:['magichit',.32,1.5,110],frost:[V('s_ice',3),.26,1,110],hex:['s_spell2',.24,.85,120],gale:['s_gust',.42,1,300],
+  quake:[['s_rock1','s_rock2'],.42,1,200],obelisk:[['s_gem1','s_gem2'],.14,1.1,300],star:['s_spell1',.42,.7,300],
+  dragon:['s_breath',.4,1,500],dragonroar:[V('s_roar',3),.32,1.15,2500],phoenix:[['s_fire1','s_fire2'],.3,1.25,250],pegasus:[['s_punch','s_stomp'],.3,1.1,140],imp:[['s_imp','s_imp2'],.22,1.35,120],bats:[['s_squeak1','s_squeak2'],.16,1.5,90],drake:['magichit',.32,1.2,140],
+  boom:[V('s_boom',4),.5,1,90],splash:[['s_splash1','s_splash2'],.32,1,150],
+  die:[V('s_die',4),.2,1.35,70],diebig:['diebig',.7,1,200],brutedie:[['s_troll2','s_troll1'],.42,.9,200],barrel:[['s_boom1','s_boom2'],.6,.9,150],nestbreak:[['s_wood2','s_wood1'],.5,1,150],jackpot:['s_jackpot',.4,1,300],
+  ehit:[[...V('s_grunt',4),...V('s_hurt',3)],.09,1.45,150],bhit:[V('s_troll',3),.14,1,260],
+  hub:['castlehit',.75,1,120],collapse:[V('s_fall',3),.75,.8,600],warroar:[['s_roar2','s_roar4'],.8,.8,900],
+  level:['levelup',.55,1,300],pick:['tap',.7,1,40],deny:['s_deny',.25,1,120],build:['build',.6,1,120],upgrade:[['s_hammer1','s_hammer2'],.4,1,120],land:['land',.7,1,120],
+  wave:['wave',.55,1,400],boss:['boss',.8,1,900],rift:['growl',.6,1,400],over:['lose',.8,1,900],cleared:['cleared',.6,1,300],gong:['s_gong',.5,1,900],
+  coin:[V('s_coin',3),.16,1.15,55],purse:['s_purse',.4,1,150],
+  dshuf:['s_dshuf',.5,1,600],dthrow:['s_dthrow',.55,1,300],deal:['s_cfan',.42,1,300],cpick:[['s_cplace1','s_cplace2'],.45,1,120],banish:['s_cshove',.5,1,200],lock:['s_latch',.4,1,120]};
+
+const BUF={};let sfxAsked=false,voices=0;
 function loadSfx(){
   if(!AC||sfxAsked)return;sfxAsked=true;
-  for(const f of new Set(Object.values(REC).map(r=>r[0])))
+  for(const f of new Set(Object.values(REC).flatMap(r=>[].concat(r[0]))))
     fetch('audio/'+f+'.ogg').then(r=>{if(!r.ok)throw 0;return r.arrayBuffer()}).then(b=>AC.decodeAudioData(b)).then(buf=>{BUF[f]=buf}).catch(()=>{});
 }
 function sfx(n){
   const now=performance.now(),r=REC[n],s=SF[n];if(!AC)return;
   if(lastS[n]&&now-lastS[n]<(r?r[3]:s[0]))return;lastS[n]=now;
-  if(r&&BUF[r[0]]){const src=AC.createBufferSource(),ga=AC.createGain();src.buffer=BUF[r[0]];src.playbackRate.value=r[2]*rnd(.94,1.06);ga.gain.value=r[1]*2.4;src.connect(ga);ga.connect(master);src.start()}
+  const fn=r?(Array.isArray(r[0])?r[0][Math.random()*r[0].length|0]:r[0]):null;
+  if(r&&BUF[fn]){if(voices>=22&&r[3]<200)return;voices++;const src=AC.createBufferSource(),ga=AC.createGain();src.buffer=BUF[fn];src.onended=()=>voices--;src.playbackRate.value=r[2]*rnd(.94,1.06);ga.gain.value=r[1]*2.4;src.connect(ga);ga.connect(master);src.start()}
   else if(s)s[1]();
 }
 /* music: a calm loop between waves, battle loops during them, the big orchestral theme for warlord waves */
-const TRACKS={calm:['calm.ogg',.5],battle:['battle.ogg',.5],march:['march.ogg',.5],epic:['epic.mp3',.2]};
+const TRACKS={calm:['calm.ogg',.5],battle:['battle.ogg',.5],march:['march.ogg',.5],epic:['epic.mp3',.2],
+  coast_calm:['mus_coast_calm.ogg',.28],coast_battle:['mus_coast_battle.ogg',.42],canyon_calm:['mus_canyon_calm.ogg',.28],canyon_battle:['mus_canyon_battle.ogg',.28],
+  amb_forest:['amb_forest.ogg',.32],amb_coast:['amb_coast.ogg',.3],amb_canyon:['amb_canyon.ogg',.3]};
+const LMUS={coast:{calm:'coast_calm',battle:'coast_battle'},canyon:{calm:'canyon_calm',battle:'canyon_battle'}};
 const MUS={};let musOn=false,musWant=null;
 function musicTick(dt){
   if(!musOn)return;
@@ -534,8 +549,11 @@ function musicTick(dt){
   else want=S.wave%5===0?'epic':S.wave%2?'battle':'march';
   if(S.mode==='draft'&&musWant)want=musWant;
   musWant=want;
+  const lm=S.mode!=='title'&&LMUS[S.map];if(lm&&want){if(want==='calm')want=lm.calm;else if(want!=='epic')want=S.wave%2||!lm.march?lm.battle:lm.march}
+  const amb=S.mode!=='title'&&S.mode!=='over'&&S.map?'amb_'+S.map:null;
   if(want&&!MUS[want]){const a=new Audio('audio/'+TRACKS[want][0]);a.loop=true;a.volume=0;a.preload='auto';MUS[want]=a}
-  for(const k in MUS){const a=MUS[k],tv=(k===want&&!muted&&!document.hidden)?TRACKS[k][1]:0;
+  if(amb&&TRACKS[amb]&&!MUS[amb]){const a=new Audio('audio/'+TRACKS[amb][0]);a.loop=true;a.volume=0;a.preload='auto';MUS[amb]=a}
+  for(const k in MUS){const a=MUS[k],tv=((k===want||k===amb)&&!muted&&!document.hidden)?TRACKS[k][1]:0;
     let v=a.volume+(tv-a.volume)*Math.min(1,dt*1.6);if(Math.abs(v-tv)<.004)v=tv;a.volume=Math.max(0,Math.min(1,v));
     if(v>0&&a.paused){const p=a.play();if(p&&p.catch)p.catch(()=>{})}else if(v===0&&!a.paused){a.pause();if(k!==want)a.currentTime=0}}
 }
@@ -781,7 +799,7 @@ function startWave(){
     const c=S.paths[S.paths.length-1].cells[0];for(let i=0;i<4;i++)emit({k:'s',name:'fx_dust',x:c[0]+.5+rnd(-.5,.5),y:c[1]+.4+rnd(-.5,.3),sc:1.6,fps:11,t:-i*.08})}
   const q=S.plan.q.slice(),boss=S.plan.boss;
   S.spawnQ=q; S.spawnT=note?1.6:.6; S.waveTotal=q.length;
-  banner(boss?'Warlord':'Wave '+w,note||(S.tide?'High tide: faster goblins, more gold':boss?'Wave '+w:''),boss); sfx(boss?'boss':'wave');
+  banner(boss?'Warlord':'Wave '+w,note||(S.tide?'High tide: faster goblins, more gold':boss?'Wave '+w:''),boss); sfx(boss?'boss':'wave');if(boss)setTimeout(()=>sfx('warroar'),700);
 }
 /* each wave is built around a few featured kinds of goblin, so different waves ask for different towers */
 function planWave(w){
@@ -828,7 +846,7 @@ function tRate(t,l){const b=t.b;return T[t.type].rate*(1+.05*((l||L(t))-1))*(b&&
 function upCost(type){const base=type==='core'?100:T[type].cost;return Math.round(base*Math.pow(1.7,(S.tl[type]||1)-1)/5)*5}
 function upgradeType(type){
   if(S.mode!=='play')return;const c=upCost(type);if(S.gold<c)return;
-  S.gold-=c;S.tl[type]=(S.tl[type]||1)+1;sfx('build');
+  S.gold-=c;S.tl[type]=(S.tl[type]||1)+1;sfx('upgrade');
   for(const b of S.base.values())if(b.tower&&b.tower.type===type){const q=b.core?{x:b.x,y:b.y-.6}:b;
     emit({k:'s',name:'fx_dust',x:q.x+.5,y:q.y+.7,sc:1.6,fps:14,t:0});emit({k:'txt',x:q.x+.5,y:q.y-1.2,life:1.3,max:1.3,str:'Level '+S.tl[type],col:'#f6c64a',size:.4})}
   renderBar();showInfo();
@@ -850,7 +868,7 @@ function renderShop(){
     const cv2=document.createElement('canvas');row.appendChild(cv2);
     const tx=document.createElement('div');tx.innerHTML='<b>'+it.name+(l?' · level '+l:'')+'</b><span>'+it.desc(l)+'</span>';row.appendChild(tx);
     const bt=document.createElement('button');bt.className='big';bt.textContent=c+' gold';bt.disabled=S.gold<c;
-    bt.addEventListener('click',()=>{if(S.gold<c)return;S.gold-=c;S.shop[it.id]++;it.f();sfx('level');renderShop()});
+    bt.addEventListener('click',()=>{if(S.gold<c)return;S.gold-=c;S.shop[it.id]++;it.f();sfx('purse');renderShop()});
     row.appendChild(bt);box.appendChild(row);drawArt(cv2,{kind:'upg',u:{ic:it.ic}})}
 }
 function setShop(on){shopOpen=on;if(on)renderShop();$('shop').classList.toggle('on',on)}
@@ -933,7 +951,7 @@ function renderBar(){
         const ds=document.createElement('small');ds.textContent=it.short?it.short(l):it.desc(l);sb.appendChild(ds);
         if(l){const lv=document.createElement('i');lv.textContent='Lv '+l;sb.appendChild(lv)}
         const cb=document.createElement('b');cb.textContent=c2;sb.appendChild(cb);sb.setAttribute('aria-label','Buy '+it.name+' for '+c2+' gold. '+it.desc(l));
-        sb.addEventListener('click',()=>{const cc=shopCost(it);if(S.gold<cc){sfx('pick');return}S.gold-=cc;S.shop[it.id]++;it.f();sfx('level');barKey='';renderBar()});
+        sb.addEventListener('click',()=>{const cc=shopCost(it);if(S.gold<cc){sfx('deny');return}S.gold-=cc;S.shop[it.id]++;it.f();sfx('purse');barKey='';renderBar()});
         fl.appendChild(sb);drawArt(cv3,{kind:'upg',u:{ic:it.ic}})}}drawArt(cv2,{kind:'upg',u:{ic:'core'}})}
   placeFly();fitUI();
 }
@@ -946,7 +964,7 @@ function hurt(e,d,src,quiet){
   if(src&&(src.type==='flame'||src.type==='oil'||src.type==='phoenix'||src.type==='dragon'||quiet))e.noRegen=2.5;
   if(m!==1&&!quiet&&TM-(S.tipT||0)>.4){S.tipT=TM;emit({k:'txt',x:e.x,y:e.y-.7,life:.7,max:.7,str:m>1?'Weak':'Resist',col:m>1?'#f6c64a':'#aab4d0',size:.3})}
   e.hp-=d;
-  if(!quiet){e.flash=.1;if(src&&src.mut==='venom'){e.pt=3;e.pd=Math.max(e.pd||0,d*.4);e.psrc=src}}
+  if(!quiet){e.flash=.1;if(src&&e.hp>0)sfx(e.type==='brute'||e.type==='boss'?'bhit':'ehit');if(src&&src.mut==='venom'){e.pt=3;e.pd=Math.max(e.pd||0,d*.4);e.psrc=src}}
   if(e.hp<=0){e.dead=true;S.kills++;coins(e.x,e.y-.25,E[e.type].gold*S.G.gold*(src&&src.mut==='gilded'?2:1)*(e.bounty||1)*(e.tide?1.5:1));if(e.bounty)emit({k:'txt',x:e.x,y:e.y-.9,life:1.1,max:1.1,str:'Bounty +'+Math.round(E[e.type].gold*S.G.gold*(e.bounty-1)),col:'#f6c64a',size:.36});gainXp(E[e.type].xp*S.G.xp);burst(e)}
 }
 function burst(e){
@@ -954,7 +972,7 @@ function burst(e){
   if(e.type==='nest')for(let i=0;i<4;i++)spawn('swarm',{p:e.p,seg:e.seg,t:Math.max(0,e.t-i*.12)});
   emit({k:'s',name:'fx_dust',x:e.x,y:e.y,sc:d.sc*1.5,fps:16,t:0});
   emit({k:'xp',x:e.x,y:e.y,life:.75,max:.75,bend:rnd(-1,1)});
-  if(e.type==='boss'){earn('b',5);S.shake=Math.max(S.shake,.35);sfx('diebig');emit({k:'s',name:'fx_explosion',x:e.x,y:e.y,sc:3,fps:12,t:0})}else sfx(e.type==='tank'||e.type==='nest'||e.type==='brute'?'diebig':'die');
+  if(e.type==='boss'){earn('b',5);S.shake=Math.max(S.shake,.35);sfx('diebig');emit({k:'s',name:'fx_explosion',x:e.x,y:e.y,sc:3,fps:12,t:0})}else sfx(e.type==='tank'?'barrel':e.type==='nest'?'nestbreak':e.type==='brute'?'brutedie':e.type==='goldie'?'jackpot':'die');
 }
 function gainXp(v){
   S.xp+=v; let need=xpNeed();
@@ -980,14 +998,14 @@ function hitBase(e){
       for(let i=0;i<8;i++)emit({k:'s',name:'fx_explosion',x:kx+.5+rnd(-3,3),y:ky+rnd(-2.4,2.4),sc:rnd(1.8,3),fps:12,t:-i*.06});
       emit({k:'s',name:'fx_heal',x:kx+.5,y:ky+.1,sc:1.8,fps:12,t:0});banner('Second wind','The castle holds on with 1 health');sfx('level');S.shake=Math.max(S.shake,.5);return}
     K.hp=0;
-    if(standing().length>1){K.down=true;keepFall(ki);S.shake=Math.max(S.shake,.6);sfx('boss');
+    if(standing().length>1){K.down=true;keepFall(ki);S.shake=Math.max(S.shake,.6);sfx('collapse');sfx('barrel');
       for(let i=0;i<7;i++)emit({k:'s',name:'fx_explosion',x:kx+.5+rnd(-1.3,1.3),y:ky+.2+rnd(-1,.6),sc:rnd(2,3.4),fps:10,t:-i*.12});
       const nx=liveKeep(ki);banner('The '+keepName(ki)+' keep has fallen','Its goblins now march on the '+keepName(nx)+' keep');return}
     gameOver(ki)}
 }
 const GOAL=30;let wins={};try{wins=JSON.parse(localStorage.getItem('pb_wins'))||{}}catch(e){}
 function victory(){
-  S.won=true;S.mode='won';sfx('level');S.sel=null;showInfo();
+  S.won=true;S.mode='won';sfx('level');sfx('gong');S.sel=null;showInfo();
   earn('v',20);if(!wins['@'+S.map+'/'+(S.diff||'normal')])earn('f',50,true);$('wcr').innerHTML=crLine();
   const opened=newUnlocks(()=>{wins[S.hero]=(wins[S.hero]||0)+1;wins['@'+S.map]=(wins['@'+S.map]||0)+1;{const k='@'+S.map+'/'+(S.diff||'normal');wins[k]=(wins[k]||0)+1}});try{localStorage.setItem('pb_wins',JSON.stringify(wins))}catch(e){}
   if(S.wave>best){best=S.wave;try{localStorage.setItem('pb_best',best)}catch(e){}}
@@ -997,7 +1015,7 @@ function victory(){
   $('won').classList.add('on');
 }
 function gameOver(ki){
-  S.mode='over'; S.fallen=true; S.fellK=ki||0; keepFall(ki||0); const [CX,CY]=keepXY(ki||0);
+  S.mode='over'; S.fallen=true; S.fellK=ki||0; keepFall(ki||0);sfx('collapse');sfx('barrel'); const [CX,CY]=keepXY(ki||0);
   {const h=document.querySelector('#over h2');if(h)h.textContent=KN()>1?(keeps().every((_,i)=>i===(ki||0)||kDown(i))?(KN()===2?'Both keeps have fallen':'All '+NUMW[KN()]+' keeps have fallen'):'The '+keepName(ki||0)+' keep has fallen'):'The castle has fallen'} try{localStorage.removeItem('pb_save')}catch(e){} sfx('over'); S.shake=.6;
   for(let i=0;i<7;i++)emit({k:'s',name:'fx_explosion',x:CX+.5+rnd(-1.3,1.3),y:CY+.2+rnd(-1,.6),sc:rnd(2,3.4),fps:10,t:-i*.12});
   if(S.wave>best){best=S.wave;try{localStorage.setItem('pb_best',best)}catch(e){}}
@@ -1099,16 +1117,16 @@ function updateFlyers(dt){
 }
 function flyerAttack(t,f,tg){
   const d=T[t.type],dmg=tDmg(t);
-  if(t.type==='dragon'){const cs2=S.paths[tg.p].cells;sfx('flame');
+  if(t.type==='dragon'){const cs2=S.paths[tg.p].cells;sfx('dragon');if(Math.random()<.3)sfx('dragonroar');
     for(let i=-1;i<=2;i++){const c=cs2[Math.max(0,Math.min(cs2.length-2,tg.seg+i))];S.pools.push({x:c[0]+.5,y:c[1]+.5,r:.8,life:3,dmg,src:t,tk:i*.05+.05,fire:1})}
     return}
-  if(t.type==='drake'){const pts=[[f.x,f.y-1.1]],hit=new Set();let cur=tg,n=d.chain+L(t)-1;sfx('tesla');
+  if(t.type==='drake'){const pts=[[f.x,f.y-1.1]],hit=new Set();let cur=tg,n=d.chain+L(t)-1;sfx('drake');
     while(cur&&n-->0){hit.add(cur);pts.push([cur.x,cur.y-.15]);hurt(cur,dmg,t);emit({k:'s',name:M.fx_zap?'fx_zap':'fx_mexp',x:cur.x,y:cur.y-.1,sc:M.fx_zap?.7:.55,fps:20,t:0});
       let nx=null,nd=4.5;for(const e of S.enemies){if(e.dead||e.fly||hit.has(e))continue;const q=Math.hypot(e.x-cur.x,e.y-cur.y);if(q<nd){nd=q;nx=e}}cur=nx}
     emit({k:'bolt',pts,life:.22,max:.22});return}
-  hurt(tg,dmg,t);
+  hurt(tg,dmg,t);if(t.type!=='pegasus')sfx(t.type);
   if(t.type==='phoenix')emit({k:'s',name:'fx_fire_s',x:tg.x,y:tg.y+.3,sc:1.6,fps:16,t:0,foot:true});
-  else if(t.type==='pegasus'){emit({k:'s',name:'fx_dust',x:tg.x,y:tg.y,sc:1.5,fps:18,t:0});sfx('guard')}
+  else if(t.type==='pegasus'){emit({k:'s',name:'fx_dust',x:tg.x,y:tg.y,sc:1.5,fps:18,t:0});sfx('pegasus')}
   else emit({k:'ring',x:tg.x,y:tg.y,r:.35,life:.15,max:.15,col:'#fff6dc'});
 }
 function shoot(t,tg,dmg,mz){
@@ -1127,8 +1145,8 @@ function update(dt){
     if(S.spawnQ.length){S.spawnT-=dt;if(S.spawnT<=0){const ty=S.spawnQ.shift();spawn(ty);S.spawnT=Math.max(.22,.75-S.wave*.02)*(ty==='swarm'?.4:1)}}
     else if(!S.enemies.length){sfx('cleared');coins(CX+.5,CY-.4,(10+2*S.wave)*S.G.gold);
       for(const b of S.base.values()){const u=b.tower;if(u&&u.type==='phoenix'){if(u.saveCd>0)u.saveCd--;if(u.ashes>0&&--u.ashes<=0){u.fl=null;emit({k:'s',name:'p_reborn',x:b.x+.5,y:b.y-.88,sc:.95,fps:6,t:0,foot:true});emit({k:'txt',x:b.x+.5,y:b.y-1.3,life:1.4,max:1.4,str:'Reborn',col:'#ffb347',size:.4})}}}
-      for(const b of S.base.values())if(b.tower&&b.tower.type==='mint'){const a=Math.round(6*eff(b.tower)*S.G.gold);coins(b.x+.5,b.y-.5,a);emit({k:'txt',x:b.x+.5,y:b.y-1,life:1.3,max:1.3,str:'+'+a,col:'#f6c64a',size:.38})}S.between=true;S.countdown=6;S.hp=Math.min(S.maxHp,S.hp+1);if(S.k2)S.k2.hp=Math.min(S.k2.maxHp,S.k2.hp+1);{const n=globalThis.__g&&__g.NODIE?1:1+Math.floor(Math.random()*6)%3;S.pending+=n;S.wpTot=n;S.wpLeft=n;S.dieN=n;S.dieT=DIE_T;S.dieSeed=Math.random()*9;S.dieTick=0}earn('w',1);if(S.A.int){const a=Math.min(10,Math.floor(S.gold*.01*S.A.int));if(a>0){S.gold+=a;emit({k:'txt',x:CX+.5,y:CY-1.5,life:1.6,max:1.6,str:'Interest +'+a,col:'#f6c64a',size:.38})}}planWave(S.wave+1);if(S.wave%5===0){S.rerolls++;emit({k:'txt',x:CX+.5,y:CY-2,life:2,max:2,str:'Warlords beaten: +1 reroll',col:'#f6c64a',size:.4})}if(S.wave>=GOAL&&!S.endless&&!S.won)victory()}
-  }else if(S.dieT>0){S.dieT-=dt/2;const k=Math.floor((DIE_T-S.dieT)*9);if(S.dieT>DIE_T-.95&&k!==S.dieTick){S.dieTick=k;sfx('pick')}if(S.dieT<=DIE_T-.95&&S.dieTick>=0){S.dieTick=-1;sfx('land')}}
+      for(const b of S.base.values())if(b.tower&&b.tower.type==='mint'){const a=Math.round(6*eff(b.tower)*S.G.gold);coins(b.x+.5,b.y-.5,a);emit({k:'txt',x:b.x+.5,y:b.y-1,life:1.3,max:1.3,str:'+'+a,col:'#f6c64a',size:.38})}S.between=true;S.countdown=6;S.hp=Math.min(S.maxHp,S.hp+1);if(S.k2)S.k2.hp=Math.min(S.k2.maxHp,S.k2.hp+1);{const n=globalThis.__g&&__g.NODIE?1:1+Math.floor(Math.random()*6)%3;S.pending+=n;S.wpTot=n;S.wpLeft=n;S.dieN=n;S.dieT=DIE_T;S.dieSeed=Math.random()*9;S.dieTick=0;sfx('dshuf')}earn('w',1);if(S.A.int){const a=Math.min(10,Math.floor(S.gold*.01*S.A.int));if(a>0){S.gold+=a;emit({k:'txt',x:CX+.5,y:CY-1.5,life:1.6,max:1.6,str:'Interest +'+a,col:'#f6c64a',size:.38})}}planWave(S.wave+1);if(S.wave%5===0){S.rerolls++;emit({k:'txt',x:CX+.5,y:CY-2,life:2,max:2,str:'Warlords beaten: +1 reroll',col:'#f6c64a',size:.4})}if(S.wave>=GOAL&&!S.endless&&!S.won)victory()}
+  }else if(S.dieT>0){S.dieT-=dt/2;const k=Math.floor((DIE_T-S.dieT)*9);if(S.dieT>DIE_T-.95&&k!==S.dieTick){S.dieTick=k}if(S.dieT<=DIE_T-.95&&S.dieTick>=0){S.dieTick=-1;sfx('dthrow')}}
   else if(S.started||!$('tip').classList.contains('on')){S.countdown-=dt/2;if(S.countdown<=0)startWave()}
   for(const e of S.enemies){
     if(e.dead)continue;
@@ -1176,7 +1194,7 @@ function update(dt){
       if(d<=step+.05)land=true;else{s.x+=dx/d*step;s.y+=dy/d*step}}
     if(!land)continue;
     s.done=true;
-    if(s.type==='oil'){S.pools.push({x:s.tx,y:s.ty,r:.85,life:8,dmg:s.dmg,src:s.src,tk:0});sfx('flame');continue}
+    if(s.type==='oil'){S.pools.push({x:s.tx,y:s.ty,r:.85,life:8,dmg:s.dmg,src:s.src,tk:0});sfx('splash');continue}
     if(def.splash){
       const sR=def.splash*(S.hero==='marshal'&&inFam(s.type)?1+Math.min(.5,hb()/2):1);for(const e of S.enemies)if(!e.dead&&Math.hypot(e.x-s.tx,e.y-s.ty)<=sR)hurt(e,s.dmg,s.src);
       emit({k:'s',name:'fx_explosion',x:s.tx,y:s.ty,sc:2.3,fps:15,t:0});
@@ -1239,14 +1257,14 @@ function openDraft(first){
   S.cards=cards;S.mark=null;
   const wr=S.wpLeft>0&&!S.enemies.length&&S.between,wi=wr?S.wpTot-S.wpLeft+1:0;if(wr)S.wpLeft--;
   $('dtitle').textContent=first?'Choose your first tower':wr?'Wave '+S.wave+' cleared'+(S.wpTot>1?' · pick '+wi+' of '+S.wpTot:''):'Level '+S.level;
-  if(!first)sfx('level');
+  if(!first)sfx('deal');
   $('cards').classList.remove('still');renderDraft();
   $('draft').classList.add('on');
 }
 function draftTap(c){
   if(draftMode==='ban'){if(c.kind!=='tower'||S.banLeft<=0)return;S.ban.push(c.id);S.banLeft--;if(S.lock===c)S.lock=null;if(S.mark===c){S.mark=null;S.lockLeft++}
-    const i=S.cards.indexOf(c),seen=new Set(S.cards.map(q=>q.id));S.cards[i]=dealOne(draftFirst,seen);draftMode=null;sfx('pick');$('cards').classList.add('still');renderDraft();return}
-  if(draftMode==='lock'){if(S.mark===c){S.mark=null;S.lockLeft++}else{if(S.mark)S.lockLeft++;if(S.lockLeft<=0)return;S.mark=c;S.lockLeft--}draftMode=null;sfx('pick');$('cards').classList.add('still');renderDraft();return}
+    const i=S.cards.indexOf(c),seen=new Set(S.cards.map(q=>q.id));S.cards[i]=dealOne(draftFirst,seen);draftMode=null;sfx('banish');$('cards').classList.add('still');renderDraft();return}
+  if(draftMode==='lock'){if(S.mark===c){S.mark=null;S.lockLeft++}else{if(S.mark)S.lockLeft++;if(S.lockLeft<=0)return;S.mark=c;S.lockLeft--}draftMode=null;sfx('lock');$('cards').classList.add('still');renderDraft();return}
   choose(c);
 }
 function renderDraft(){const first=draftFirst,cards=S.cards;
@@ -1285,7 +1303,7 @@ function celebrate(b,str){
   sfx('build');
 }
 function choose(c){
-  $('draft').classList.remove('on');sfx('pick');
+  $('draft').classList.remove('on');sfx('cpick');
   if(S.mark===c){S.mark=null;S.lockLeft++}
   if(c.kept||S.lock===c)S.lock=null;delete c.kept;
   if(S.mark){S.lock=S.mark;S.mark=null}
@@ -1457,7 +1475,7 @@ function renderArmory(){
     el.innerHTML='<div class="at"><div class="an">'+a.name+'</div><div class="ad">'+a.txt(done?l:l+1)+'</div><div class="pips">'+a.cost.map((_,i)=>'<i'+(i<l?' class="on"':'')+'></i>').join('')+'</div></div>';
     const b=document.createElement('button');b.className='big';b.innerHTML=done?'Owned':CRN+price;b.disabled=done||crowns<price;
     b.setAttribute('aria-label',done?a.name+', owned':'Buy '+a.name+' for '+price+' Crowns');
-    b.onclick=()=>{if(crowns<price||done)return;crowns-=price;arm[a.id]=l+1;crSave();sfx('build');renderArmory()};
+    b.onclick=()=>{if(crowns<price||done)return;crowns-=price;arm[a.id]=l+1;crSave();sfx('purse');renderArmory()};
     el.appendChild(b);box.appendChild(el)}
   $('areset').disabled=armTotal()<=0;$('areset').textContent=armTotal()>0?'Refund everything (+'+armTotal()+')':'Refund everything';
 }
@@ -2079,7 +2097,7 @@ function frame(now){
 {const st=$('stage');W=st.clientWidth||600;H=st.clientHeight||600}
 newRun();resize();requestAnimationFrame(t=>{last=t;frame(t)});
 globalThis.__pb=()=>S;$('armn').textContent=Math.floor(crowns);
-globalThis.__g={cloudStart,cloud,DIFF,LEVEL,hurt,coins,drawArt,TOWERS,spawn,ARM,setArm(o,c){arm=o;if(c!=null)crowns=c},getCrowns:()=>crowns,addPath,TUNE,update,startWave,openDraft,choose,upgradeType,upCost,newRun,HERO,HEROES,LEVELS,DIFFS,T,E,TOWERS,SHOP,shopCost,L};globalThis.__hub=()=>[CX,CY];globalThis.__cam=()=>({ox,oy,cs});
+globalThis.__g={cloudStart,cloud,BUF,REC,MUS,DIFF,LEVEL,hurt,coins,drawArt,TOWERS,spawn,ARM,setArm(o,c){arm=o;if(c!=null)crowns=c},getCrowns:()=>crowns,addPath,TUNE,update,startWave,openDraft,choose,upgradeType,upCost,newRun,HERO,HEROES,LEVELS,DIFFS,T,E,TOWERS,SHOP,shopCost,L};globalThis.__hub=()=>[CX,CY];globalThis.__cam=()=>({ox,oy,cs});
 })();
 </script>
 </body>
