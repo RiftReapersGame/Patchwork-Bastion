@@ -1,0 +1,13 @@
+const {chromium}=require('/opt/npm-tools/node_modules/playwright');
+(async()=>{const b=await chromium.launch({executablePath:'/usr/bin/google-chrome',args:['--no-sandbox']});
+ const p=await b.newPage({viewport:{width:1200,height:800},deviceScaleFactor:1.5});const errs=[];p.on('pageerror',e=>errs.push(e.message));
+ await p.addInitScript(()=>localStorage.setItem('pb_tut','1'));
+ await p.goto('file:///home/claude/bastion/index.html');await p.waitForTimeout(1200);
+ await p.click('#play');await p.locator('#hcards .hero').nth(0).click();await p.click('#hgo');await p.locator('.dbtn').nth(0).click();await p.locator('.hero.lvl').nth(0).click();await p.waitForTimeout(600);
+ await p.addStyleTag({content:'#hud,#dock,#upbar,#flyout,#dmg,#tip,#banner,#preview,#info,#draft,#mtools{display:none!important}'});
+ await p.mouse.move(600,400);for(let k=0;k<5;k++){await p.mouse.wheel(0,-300);await p.waitForTimeout(80)}await p.waitForTimeout(400);
+ await p.evaluate(()=>{const S=__pb();S.mode='draft';const cx=S.base?[...S.base.values()].find(b=>b.core):null;const X=cx.x-3,Y=cx.y-4;
+   const types=['bolt','sniper','repeater','lancer','ballista','blowpipe','frost','hex','glaive','cannon','tnt','oil','catapult','star'];
+   types.forEach((t,i)=>{const x=X+(i%5)*1.6,y=Y+Math.floor(i/5)*1.5;S.shots.push({x,y,sx:x-2,sy:y,tx:x+2,ty:y+.4,tgt:null,dmg:0,type:t,lvl:1,src:null,ang:-.3+i*.05,p:.5,dur:1})});
+   for(let i=0;i<6;i++)S.fx.push({k:'spike',n:1+i%4,x:X+8+i*.3,y:Y+5+(i%2)*.3,sc:.7,life:.5,max:.9,t:0});});
+ await p.waitForTimeout(300);await p.screenshot({path:'pj.png'});console.log(errs);await b.close()})();

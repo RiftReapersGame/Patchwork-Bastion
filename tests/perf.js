@@ -1,0 +1,12 @@
+const {chromium}=require('/opt/npm-tools/node_modules/playwright');
+(async()=>{const b=await chromium.launch({executablePath:'/usr/bin/google-chrome',args:['--no-sandbox']});
+ const p=await b.newPage({viewport:{width:1000,height:700}});
+ await p.addInitScript(()=>localStorage.setItem('pb_tut','1'));
+ await p.goto('file:///home/claude/bastion/index.html');await p.waitForFunction(()=>document.getElementById('loading').classList.contains('done'));
+ await p.click('#play');await p.locator('#hcards .hero').nth(0).click();await p.click('#hgo');await p.locator('.dbtn').nth(0).click();await p.locator('.hero.lvl').nth(0).click();await p.waitForTimeout(3000);
+ const r=await p.evaluate(()=>{const S=__pb();S.G.xp=0;const ts=['bolt','cannon','tesla','frost','dragon','bats','glaive','oil','catapult','sniper'];
+   for(let i=0;i<4;i++)for(const t of ts)__g.choose({id:'t',kind:'tower',type:t,rar:2,mut:null});document.getElementById('draft').classList.remove('on');S.mode='play';
+   for(let i=0;i<160;i++){__g.spawn(['grunt','swarm','tank','brute'][i%4],{p:i%S.paths.length,seg:2+(i%20),t:.5})}for(const e of S.enemies)e.hp=e.maxHp=1e6;
+   const t0=performance.now();for(let i=0;i<120;i++)__g.update(1/60);const per=(performance.now()-t0)/120;
+   return {towers:[...S.base.values()].filter(b=>b.tower).length,enemies:S.enemies.length,msPerStep:per.toFixed(2)}});
+ console.log(JSON.stringify(r));await b.close()})();

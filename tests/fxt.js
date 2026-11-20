@@ -1,0 +1,13 @@
+const {chromium}=require('/opt/npm-tools/node_modules/playwright');
+(async()=>{const b=await chromium.launch({executablePath:'/usr/bin/google-chrome',args:['--no-sandbox']});
+ const p=await b.newPage({viewport:{width:1200,height:800},deviceScaleFactor:1.5});const errs=[];p.on('pageerror',e=>errs.push(e.message));
+ await p.addInitScript(()=>localStorage.setItem('pb_tut','1'));
+ await p.goto('file:///home/claude/bastion/index.html');await p.waitForFunction(()=>!document.getElementById('loading'));
+ await p.click('#play');await p.locator('#hcards .hero').nth(1).click();await p.click('#hgo');await p.locator('.dbtn').nth(0).click();await p.locator('.hero.lvl').nth(0).click();await p.waitForTimeout(600);
+ await p.addStyleTag({content:'#hud,#dock,#upbar,#flyout,#dmg,#tip,#banner,#preview,#info,#draft,#mtools{display:none!important}'});
+ await p.mouse.move(600,400);for(let k=0;k<3;k++){await p.mouse.wheel(0,-300);await p.waitForTimeout(80)}await p.waitForTimeout(400);
+ await p.evaluate(()=>{const S=__pb();S.mode='draft';const c=[...S.base.values()].find(b=>b.core);const X=c.x+3,Y=c.y-2;
+   const L=[['fx_explosion',2.3,13,0],['fx_dust',1.5,14,0],['fx_fire',1.2,10,0],['fx_heal',1.1,14,.05],['fx_fexp',1.2,20,-.04],['fx_mexp',1.1,20,-.04],['fx_slash',1.4,22,-.04],['fx_zap',1.2,20,-.04]];
+   L.forEach(([n,sc,fps,t],i)=>S.fx.push({k:'s',name:n,x:X+(i%4)*1.6,y:Y+Math.floor(i/4)*1.8,sc,fps,t}));
+   for(let i=0;i<3;i++)S.fx.push({k:'s',name:'fx_fire',x:X+i*.5,y:Y+4,sc:1,fps:10,t:i*.3,foot:true});});
+ await p.waitForTimeout(150);await p.screenshot({path:'fxt.png'});console.log(errs);await b.close()})();

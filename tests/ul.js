@@ -1,0 +1,20 @@
+const {chromium}=require('/opt/npm-tools/node_modules/playwright');
+(async()=>{
+ const b=await chromium.launch({executablePath:'/usr/bin/google-chrome',args:['--no-sandbox']});
+ const p=await b.newPage({viewport:{width:1210,height:756}});
+ const errs=[];p.on('pageerror',e=>errs.push(e.message));
+ await p.goto('file:///home/claude/bastion/index.html');await p.waitForTimeout(900);
+ const st=async()=>p.evaluate(()=>JSON.stringify({d:[...document.querySelectorAll('.dbtn')].map(e=>e.textContent+(e.classList.contains('sel')?'*':'')),l:[...document.querySelectorAll('.hero.lvl')].map(e=>e.classList.contains('locked'))}));
+ await p.click('#play');await p.locator('#hcards .hero').nth(0).click();await p.click('#hgo');await p.waitForTimeout(300);
+ console.log('fresh',await st());await p.screenshot({path:'ul0.png'});
+ await p.locator('.hero.lvl').nth(1).click({force:true});await p.waitForTimeout(200);console.log('locked click starts run?',await p.locator('#levels.on').count()===0);
+ await p.locator('.dbtn').nth(1).click();await p.waitForTimeout(200);console.log('normal view',await st(),await p.textContent('#ddesc'));
+ await p.locator('.dbtn').nth(0).click();await p.locator('.hero.lvl').nth(0).click();await p.waitForTimeout(300);
+ await p.evaluate(()=>{const S=__pb();S.wave=29;S.hp=S.maxHp=5000;__g.startWave();S.spawnQ.length=0;for(const e of S.enemies)e.dead=true});
+ await p.waitForTimeout(4000);await p.evaluate(()=>{const S=__pb();S.spawnQ.length=0;for(const e of S.enemies)e.dead=true});await p.waitForTimeout(1500);
+ console.log(await p.textContent('#wsub'));await p.screenshot({path:'ul1.png'});
+ await p.click('#wend');await p.click('#play');await p.locator('#hcards .hero').nth(0).click();await p.click('#hgo');await p.waitForTimeout(300);
+ console.log('after easy win',await st());await p.locator('.dbtn').nth(1).click();await p.waitForTimeout(200);console.log('normal',await st());
+ await p.locator('.dbtn').nth(2).click();await p.waitForTimeout(200);console.log('hard',await st());await p.screenshot({path:'ul2.png'});
+ console.log('errors',errs);await b.close();
+})();

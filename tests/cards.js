@@ -1,0 +1,10 @@
+const {chromium}=require('/opt/npm-tools/node_modules/playwright');
+(async()=>{const b=await chromium.launch({executablePath:'/usr/bin/google-chrome',args:['--no-sandbox']});
+ const p=await b.newPage({viewport:{width:1600,height:1000}});const errs=[];p.on('pageerror',e=>errs.push(e.message));
+ await p.addInitScript(()=>localStorage.setItem('pb_tut','1'));
+ await p.goto('file:///home/claude/bastion/index.html');await p.waitForTimeout(1500);
+ await p.click('#play');await p.locator('#hcards .hero').nth(2).click();await p.click('#hgo');await p.locator('.dbtn').nth(0).click();await p.locator('.hero.lvl').nth(0).click();await p.waitForTimeout(600);
+ const url=await p.evaluate(()=>{const ts=__g.TOWERS;const W=8,cs=240,out=document.createElement('canvas');out.width=W*cs;out.height=Math.ceil(ts.length/W)*cs;const o=out.getContext('2d');
+   ts.forEach((t,i)=>{const c=document.createElement('canvas');__g.drawArt(c,{kind:'tower',type:t,rar:3,mut:'twin'});o.fillStyle=(i+Math.floor(i/W))%2?'#e8d5b0':'#f4e6c8';o.fillRect((i%W)*cs,Math.floor(i/W)*cs,cs,cs);o.drawImage(c,(i%W)*cs,Math.floor(i/W)*cs);o.strokeStyle='#c00';o.strokeRect((i%W)*cs+.5,Math.floor(i/W)*cs+.5,cs-1,cs-1)});
+   out.style.cssText='position:fixed;left:0;top:0;z-index:99999';out.id='zz';document.body.appendChild(out);return [out.width,out.height]});
+ await p.setViewportSize({width:url[0],height:url[1]});await p.waitForTimeout(200);await p.locator('#zz').screenshot({path:'cards.png'});console.log(errs);await b.close()})();
